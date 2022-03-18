@@ -9,6 +9,18 @@ namespace Cryptography
 	/// </summary>
 	public class Hashing
 	{
+		public static string ConvertBytesToString(Byte[] bytes)
+		{
+			int byteSize = bytes.Length;
+	
+			string hashString = null;
+
+			for (int x = 0; x < byteSize; x++)	
+				hashString += bytes[x].ToString("x2");
+
+			return hashString;
+		}
+
 		public static string GetSHA256(string str)
 		{
 			try
@@ -20,25 +32,8 @@ namespace Cryptography
 			{
 				return str;
 			}
-			 
-			string hashString = null;
-			
-			Byte[] hashBytes = null; 	
-	
-			int byteSize = 0;
 
-			Encoding encoding = Encoding.UTF8;
-
-			SHA256 sha256 = SHA256Managed.Create();
-
-			hashBytes = sha256.ComputeHash(encoding.GetBytes(str));
-
-			byteSize = hashBytes.Length;
-
-			for (int x = 0; x < byteSize; x++)	
-				hashString += hashBytes[x].ToString("x2");
-			
-			return hashString;
+			return Hashing.ConvertBytesToString(SHA256Managed.Create().ComputeHash(Encoding.UTF8.GetBytes(str)));
 		}
 	}
 }

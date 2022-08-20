@@ -1,1 +1,5 @@
 ./.ccls-cache/
+csharp/bin/*
+csharp/csharp.csproj
+csharp/obj/*
+csharp/Program.cs

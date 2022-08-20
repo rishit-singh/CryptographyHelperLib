@@ -9,6 +9,8 @@ struct Array
 {
     T Data[Size];
 
+    unsigned int ArraySize;
+
     T GetValueAtIndex(unsigned int index)
     {
         return this->Data[index];
@@ -26,21 +28,26 @@ struct Array
 
     T operator =(T array[])
     {
-        this->Size = (sizeof(array) / sizeof(T));
+        this->ArraySize = (sizeof(array) / sizeof(T));
 
-        memcpy(this->Data, array, this->Size);
+        memcpy(this->Data, array.Data, this->ArraySize);
     }
 
     T operator =(Array<T, Size>& array)
     {
-        this->Size = (sizeof(array) / sizeof(T));
+        this->ArraySize = (sizeof(array) / sizeof(T));
 
-        memcpy(this->Data, array, this->Size);
+        memcpy(this->Data, array.Data, this->ArraySize);
     }
 
+    T operator =(Array<T, Size> array)
+    {
+        this->ArraySize = (sizeof(array) / sizeof(T));
 
+        memcpy(this->Data, array.Data, this->ArraySize);
+    }
 
-    Array()
+    Array() : ArraySize(Size)
     {
     }
 

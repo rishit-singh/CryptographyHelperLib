@@ -1,5 +1,7 @@
 #include "MD5.h"
 
+#include <iostream>
+
 void AppendBits(char& byte, char byte1, uint8_t count)
 {
     byte <<= count;

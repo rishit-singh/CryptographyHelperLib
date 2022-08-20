@@ -48,7 +48,7 @@ private:
         0x10325476   // D
     };
 
-    HashedBytes64 FinalHash;
+    HashedBytes64 FinalHash { HashedBytes64() };
 
     static char F(unsigned int, unsigned int, unsigned int);
     static char G(unsigned int, unsigned int, unsigned int);
@@ -59,20 +59,43 @@ private:
         MD5Hasher::F, MD5Hasher::G, MD5Hasher::H, MD5Hasher::I
     };
 
-    static constexpr unsigned int PaddingSize = (Size / 2) + 16;
-
-    static constexpr Array<char, MD5Hasher::PaddingSize> GetPaddedBytes(char* bytes)
+    static constexpr Array<char, 64> GetPaddedBytes(char* bytes)
     {
-        AppendBits(bytes, 0b1, Size, 1);
+        Array<char, 64> paddedBytes = Array<char, 64>();
+
+        int bitSize = 8;
+
+        memcpy(paddedBytes.Data, bytes, Size);
+
+        AppendBits(paddedBytes.Data, 0b1, Size, 1);
+
+        for (int x = 0;  512 % bitSize != 448 && x <= Size; x++)
+        {
+            AppendBits(paddedBytes.Data[x], 0b0, 1);
+
+            paddedBytes.SetValueAtIndex(x, paddedBytes.Data[x]);
+
+            bitSize += 8;
+        }
+
+        return paddedBytes;
     }
+
+
+    unsigned int ContextBitSize = Size * 8;
 
 public:
     HashedBytes64 Hash(char* bytes)
     {
+        this->FinalHash = MD5Hasher::GetPaddedBytes(bytes);
+
         return this->FinalHash;
     }
 
-    HashedBytes64 GetFinalHash();
+    HashedBytes64 GetFinalHash()
+    {
+        return this->FinalHash;
+    }
 };
 
 #endif // MD5_H_
